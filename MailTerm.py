@@ -13,6 +13,7 @@ def help():
 	print "--send                      send mail"
 	print "--inbox                   Open Inbox"
 	print "--init                  Initzial Email Data"
+	print "--reset                Reset programm"
 
 def randomKey():
 	key = ""
@@ -270,6 +271,24 @@ if len(sys.argv) > 1:
 	elif parameter == "--help":
 		help()
 		exit()
+	elif parameter == "--reset":
+		try:
+			os.unlink("Passwd")
+		except:	
+			print "Missing Password file"
+		if os.path.isfile("Mail.db"):
+			db = sqlite3.connect("Mail.db")
+			cmd = db.cursor()
+			cmd.execute("delete from Data")
+		 	db.commit()
+			cmd.execute("delete from Email")
+			db.commit()
+			db.close()
+			print "\x1b[33m[+]Reset complete\x1b[39m"
+			exit()
+		else:
+			print "Missing Mail.db"
+		
 	else:
 		help()
 else:
