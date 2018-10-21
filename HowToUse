@@ -1,0 +1,9 @@
+Step 1. Enter: "python MailTerm.py --init" to initialize the program
+
+Step 2. Enter "python MailTerm.py - inbox" to get to the Inbox
+
+Step 3. Enter "python MailTerm.py --send" to send emails
+ 
+Tip: This program will get an update regularly
+
+Tip2. You must enable the "Allow less secure apps" method under "https://myaccount.google.com/security?pli=1#connectedapps"
