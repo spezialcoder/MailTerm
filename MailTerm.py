@@ -74,6 +74,7 @@ def show_mail(number):
 		print "Name: "+emnam
 		print "Cc: " +c
 		print "Bcc: " + bcc
+		print "Subject: "+su
 		print 
 		print txt
 		print
