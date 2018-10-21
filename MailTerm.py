@@ -1,5 +1,5 @@
 #Developer: developermind405@gmail.com
-import smtplib,imapclient,sys,pyzmail,sqlite3,base64,os,threading,pygame
+import smtplib,imapclient,sys,pyzmail,sqlite3,base64,os,threading,pygame,time,datetime
 import subprocess as sub
 pygame.mixer.init()
 if os.path.isfile("alert.wav"):
@@ -102,12 +102,19 @@ def get_info(number):
 	returnet = [from_email,from_name]
 	return returnet
 
+def refresh():
+	with open("Log.txt" ,"a") as log:
+		log.write(str(datetime.datetime.now()) + ":   Notify service Crashed restart\n")
+		log.close()
+	time.sleep(5)
+	notify_alert = True
 def notify():
 	global notiy_alert,server
 	alls = server.search(["ALL"])
 	first = True
 	last = len(alls)
 	while notify_alert:
+		try:
 			ser = imapclient.IMAPClient(imap, ssl=True)
 			ser.login(email,base64.decodestring(password))
 			dir = ser.select_folder("INBOX")
@@ -128,6 +135,9 @@ def notify():
 					print "\n\x1b[33m[*]New Email from {0} / {1}\x1b[39m".format(from_e,from_n)
 			first = False	
 			ser.logout()
+		except:
+			refresh()
+			noitfy_alert = False
 ###########################################################################
 if len(sys.argv) > 1:
 	parameter = sys.argv[1]
