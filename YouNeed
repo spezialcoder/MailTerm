@@ -1,0 +1,18 @@
+Operating System: Linux
+
+Module
+------
+smtplib,
+imapclient
+sys
+pyzmail
+sqlite3
+base64
+os
+threading
+pygame
+hashlib
+subprocess
+random
+string
+---------
