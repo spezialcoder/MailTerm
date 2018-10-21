@@ -49,8 +49,8 @@ def show_mail(number):
 	pyz = pyzmail.PyzMessage.factory(message[number]["BODY[]"])
 	su = pyz.get_subject()
 	try:
-		em = str(pyz.get_addresses("to")[0][1])
 		emnam = str(pyz.get_addresses("to")[0][0])
+		em = str(pyz.get_addresses("to")[0][1])
 		nam = str(pyz.get_addresses("from")[0][1])
 		namenam = str(pyz.get_addresses("from")[0][0])
 		c = pyz.get_addresses("cc")
@@ -201,6 +201,11 @@ if len(sys.argv) > 1:
 							if jn():
 								server.delete_messages(uid)
 								server.expunge()
+								now = len(server.search(["ALL"]))
+								cmd.execute("delete from Email")
+								db.commit()
+								cmd.execute("insert into Email values('%i')" % now)
+								db.commit()
 					except:
 						print "Only Number!"
 					
@@ -240,6 +245,8 @@ if len(sys.argv) > 1:
 						print "\x1b[33m[+]Notify off\x1b[39m"
 					else:
 						print "Missing parameter on/off"
+				elif command == "clear":
+					d = sub.call("clear") ; del d
 						
 					
 			server.logout()
