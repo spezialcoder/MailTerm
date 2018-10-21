@@ -108,25 +108,26 @@ def notify():
 	first = True
 	last = len(alls)
 	while notify_alert:
-		ser = imapclient.IMAPClient(imap, ssl=True)
-		ser.login(email,base64.decodestring(password))
-		dir = ser.select_folder("INBOX")
-		alls = ser.search(["ALL"])
-		if len(alls) > last:
-			if first:
-				last = len(alls)
-			else:
-				wave_sound.play()
-				last = len(alls)
-				server = imapclient.IMAPClient(imap, ssl=True)
-				server.login(email,base64.decodestring(password))
-				dir = server.select_folder("INBOX")
-				last_item = int(alls[int(len(alls)-1)])
-				getinfo = get_info(last_item)
-				from_n = getinfo[1]
-				from_e = getinfo[0]
-				print "\n\x1b[33m[*]New Email from {0} / {1}\x1b[39m".format(from_e,from_n)
-		first = False
+			ser = imapclient.IMAPClient(imap, ssl=True)
+			ser.login(email,base64.decodestring(password))
+			dir = ser.select_folder("INBOX")
+			alls = ser.search(["ALL"])
+			if len(alls) > last:
+				if first:
+					last = len(alls)
+				else:
+					wave_sound.play()
+					last = len(alls)
+					server = imapclient.IMAPClient(imap, ssl=True)
+					server.login(email,base64.decodestring(password))
+					dir = server.select_folder("INBOX")
+					last_item = int(alls[int(len(alls)-1)])
+					getinfo = get_info(last_item)
+					from_n = getinfo[1]
+					from_e = getinfo[0]
+					print "\n\x1b[33m[*]New Email from {0} / {1}\x1b[39m".format(from_e,from_n)
+			first = False	
+			ser.logout()
 ###########################################################################
 if len(sys.argv) > 1:
 	parameter = sys.argv[1]
