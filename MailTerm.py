@@ -88,9 +88,23 @@ def jn():
 	else:
 		return False
 notify_alert = True
+def get_info(number):
+	message = server.fetch([number],["BODY[]","FLAGS"])
+	pyz = pyzmail.PyzMessage.factory(message[number]["BODY[]"])
+	sub = pyz.get_subject()	
+	try:
+		from_email = str(pyz.get_addresses("from")[0][1])
+		from_name = str(pyz.get_addresses("from")[0][0])
+	except:
+		from_email = email
+		from_name = "Your self"
+	returnet = [from_email,from_name]
+	return returnet
+
 def notify():
 	global notiy_alert,server
 	alls = server.search(["ALL"])
+	first = True
 	last = len(alls)
 	while notify_alert:
 		ser = imapclient.IMAPClient(imap, ssl=True)
@@ -98,11 +112,20 @@ def notify():
 		dir = ser.select_folder("INBOX")
 		alls = ser.search(["ALL"])
 		if len(alls) > last:
-			wave_sound.play()
-			last = len(alls)
-			server = imapclient.IMAPClient(imap, ssl=True)
-			server.login(email,base64.decodestring(password))
-			dir = server.select_folder("INBOX")
+			if first:
+				last = len(alls)
+			else:
+				wave_sound.play()
+				last = len(alls)
+				server = imapclient.IMAPClient(imap, ssl=True)
+				server.login(email,base64.decodestring(password))
+				dir = server.select_folder("INBOX")
+				last_item = int(alls[int(len(alls)-1)])
+				getinfo = get_info(last_item)
+				from_n = getinfo[1]
+				from_e = getinfo[0]
+				print "\n\x1b[33m[*]New Email from {0} / {1}\x1b[39m".format(from_e,from_n)
+		first = False
 ###########################################################################
 if len(sys.argv) > 1:
 	parameter = sys.argv[1]
