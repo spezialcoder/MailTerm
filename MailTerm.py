@@ -233,6 +233,7 @@ if len(sys.argv) > 1:
 					print "exit              logout"
 					print "help              Show help message"
 					print "notify on/off     Notify"
+					print "clear         clear display"
 				elif command.startswith("notify "):
 					onoff = command.split("notify ")[1]
 					if onoff == "on":
