@@ -262,10 +262,13 @@ if len(sys.argv) > 1:
 				elif command.startswith("notify "):
 					onoff = command.split("notify ")[1]
 					if onoff == "on":
-						notify_alert = True
-						cthread = threading.Thread(target=notify)
-						cthread.start()
-						print "\x1b[33m[+]Notify on\x1b[39m"
+						if not notify_alert:
+							notify_alert = True
+							cthread = threading.Thread(target=notify)
+							cthread.start()
+							print "\x1b[33m[+]Notify on\x1b[39m"
+						else:
+							print "\x1b[31m[-]Notify already on\x1b[39m"
 					elif onoff == "off":
 						notify_alert = False
 						print "\x1b[33m[+]Notify off\x1b[39m"
