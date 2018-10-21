@@ -4,7 +4,7 @@ from Crypto.Cipher import AES
 import hashlib,random,string
 #########################################Waring Very Important####################
 #####################IV
-iv = '($\x1b\xfa\xf9t\xb4\xc1B\x02\xcd\xeb1\xef\xe0\x16'
+iv = '\xd3\xa8\xd9\x08<y\x04<\xb9\xbc\x8aa\x05\xb4+\xf4'
 
 #######################################Function############################
 def help():
@@ -97,13 +97,13 @@ if len(sys.argv) > 1:
 				imap = str(cmd.execute("select Imap from Data").fetchone()[0])
 			except:
 				print "\x1b[31m[-]Failed to load data\x1b[39m"
-				exit()	
+				sys.exit(0)	
 			server = imapclient.IMAPClient(imap, ssl=True)
 			try:
 				server.login(email,base64.decodestring(password))
 			except:
 				print "Error: Less secure apps are still on or their password is wrong"
-				exit()
+				sys.exit(0)
 			dir = server.select_folder("INBOX")
 			last_ = cmd.execute("select Last from Email").fetchone()			
 			if last_:
@@ -208,7 +208,7 @@ if len(sys.argv) > 1:
 			server.logout()
 			print
 			print "Shutdown MailTerm...."
-			exit()
+			sys.exit(0)
 					
 		else:
 			print "Missing DB"
@@ -239,7 +239,7 @@ if len(sys.argv) > 1:
 				asdf.write(passwd)
 				asdf.close()
 			db.commit()
-			exit()
+			sys.exit(0)
 		
 	elif parameter == "--send":
 		if os.path.isfile("Mail.db"):
@@ -254,10 +254,10 @@ if len(sys.argv) > 1:
 				server = str(cmd.execute("select Server from Data").fetchone()[0]) 
 			except:
 				print "\x1b[31m[-]Failed to load data\x1b[39m"
-				exit()	
+				sys.exit(0)	
 		else:
 			print "Missing DB"
-			exit()
+			sys.exit(0)
 		smtp = smtplib.SMTP(server)
 		smtp.starttls()
 		smtp.login(email,base64.decodestring(password))
@@ -270,7 +270,7 @@ if len(sys.argv) > 1:
 		print "\x1b[32m			[+]Email Transfered"
 	elif parameter == "--help":
 		help()
-		exit()
+		sys.exit(0)
 	elif parameter == "--reset":
 		try:
 			os.unlink("Passwd")
@@ -285,7 +285,7 @@ if len(sys.argv) > 1:
 			db.commit()
 			db.close()
 			print "\x1b[33m[+]Reset complete\x1b[39m"
-			exit()
+			sys.exit(0)
 		else:
 			print "Missing Mail.db"
 		
