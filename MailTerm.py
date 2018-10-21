@@ -248,7 +248,8 @@ if len(sys.argv) > 1:
 					else:
 						print "Missing parameter on/off"
 				elif command == "clear":
-					d = sub.call("clear") ; del d
+					d = sub.call("clear")
+					del d
 				elif command == "send":
 					try:
 						db = sqlite3.connect("Mail.db")
@@ -265,10 +266,10 @@ if len(sys.argv) > 1:
 					smtp.starttls()
 					smtp.login(email,base64.decodestring(password))
 					to = raw_input("To: ")
-					sub = raw_input("Subject: ")
+					sube = raw_input("Subject: ")
 					print 
 					text = raw_input("Message: ")
-					smtp.sendmail("spezialcoder@gmail.com", to,"Subject: {0}\n{1}".format(sub,text))
+					smtp.sendmail("spezialcoder@gmail.com", to,"Subject: {0}\n{1}".format(sube,text))
 					smtp.quit()
 					print "\x1b[32m			[+]Email Transfered"
 						
