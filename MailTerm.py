@@ -248,6 +248,28 @@ if len(sys.argv) > 1:
 						print "Missing parameter on/off"
 				elif command == "clear":
 					d = sub.call("clear") ; del d
+				elif command == "send":
+					try:
+						db = sqlite3.connect("Mail.db")
+						cmd = db.cursor()
+						email = str(cmd.execute("select Email from Data").fetchone()[0])
+						passwd = open("Passwd", "r").read()
+						key_load = str(cmd.execute("select Key from Data").fetchone()[0])
+						password = dec(key_load,passwd,iv)
+						imap = str(cmd.execute("select Imap from Data").fetchone()[0])
+						server = str(cmd.execute("select Server from Data").fetchone()[0]) 
+					except:
+						print "\x1b[31m[-]Failed to load data\x1b[39m"	
+					smtp = smtplib.SMTP(server)
+					smtp.starttls()
+					smtp.login(email,base64.decodestring(password))
+					to = raw_input("To: ")
+					sub = raw_input("Subject: ")
+					print 
+					text = raw_input("Message: ")
+					smtp.sendmail("spezialcoder@gmail.com", to,"Subject: {0}\n{1}".format(sub,text))
+					smtp.quit()
+					print "\x1b[32m			[+]Email Transfered"
 						
 					
 			server.logout()
