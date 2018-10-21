@@ -1,7 +1,14 @@
 #Developer: developermind405@gmail.com
-import smtplib,imapclient,sys,pyzmail,sqlite3,base64,os
+import smtplib,imapclient,sys,pyzmail,sqlite3,base64,os,threading,pygame
+import subprocess as sub
+pygame.mixer.init()
+if os.path.isfile("alert.wav"):
+	wave_sound = pygame.mixer.Sound("alert.wav")
+else:
+	print "Missing alert.wav"
 from Crypto.Cipher import AES
 import hashlib,random,string
+sub.call("clear")
 #########################################Waring Very Important####################
 #####################IV
 iv = '\xd3\xa8\xd9\x08<y\x04<\xb9\xbc\x8aa\x05\xb4+\xf4'
@@ -80,6 +87,22 @@ def jn():
 		return True
 	else:
 		return False
+notify_alert = True
+def notify():
+	global notiy_alert,server
+	alls = server.search(["ALL"])
+	last = len(alls)
+	while notify_alert:
+		ser = imapclient.IMAPClient(imap, ssl=True)
+		ser.login(email,base64.decodestring(password))
+		dir = ser.select_folder("INBOX")
+		alls = ser.search(["ALL"])
+		if len(alls) > last:
+			wave_sound.play()
+			last = len(alls)
+			server = imapclient.IMAPClient(imap, ssl=True)
+			server.login(email,base64.decodestring(password))
+			dir = server.select_folder("INBOX")
 ###########################################################################
 if len(sys.argv) > 1:
 	parameter = sys.argv[1]
@@ -158,6 +181,7 @@ if len(sys.argv) > 1:
 					print	
 
 				elif command == "exit":
+					notify_alert = False
 					inbx = False
 				elif command.startswith("search "):
 					try:
@@ -203,13 +227,27 @@ if len(sys.argv) > 1:
 					print "read   <from>       read from sender"
 					print "exit              logout"
 					print "help              Show help message"
+					print "notify on/off     Notify"
+				elif command.startswith("notify "):
+					onoff = command.split("notify ")[1]
+					if onoff == "on":
+						notify_alert = True
+						cthread = threading.Thread(target=notify)
+						cthread.start()
+						print "\x1b[33m[+]Notify on\x1b[39m"
+					elif onoff == "off":
+						notify_alert = False
+						print "\x1b[33m[+]Notify off\x1b[39m"
+					else:
+						print "Missing parameter on/off"
 						
 					
 			server.logout()
 			print
 			print "Shutdown MailTerm...."
 			sys.exit(0)
-					
+				
+			
 		else:
 			print "Missing DB"
 			
